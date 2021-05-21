@@ -176,16 +176,11 @@ i = 1;
 
 for F = [0.5 , 1]
     [t1,Y1] = Manag_one(tRange, param, w, F);
-    % [t2,Y2] = Manag_two(tRange, param, w, F);
     
     n1 = Y1(:,1:end-2) ;   % split the solution into components - Immature / sum( n .* dw )
     N1 = Y1(:,end-1);      % split the solution into components - Adults / NUMBERS!!!
     R1 = Y1(:,end);        % split the solution into components - Resources
-    
-%     n2 = Y2(:,1:end-2) ;   % split the solution into components - Immature / sum( n .* dw )
-%     N2 = Y2(:,end-1);      % split the solution into components - Adults / NUMBERS!!!
-%     R2 = Y2(:,end);        % split the solution into components - Resources
-    
+
     ss1 = zeros;
     for j = 1:length(t1)
     ss1(j) = sum(log10(n1(j,:)));
@@ -208,14 +203,11 @@ for F = [0.5 , 1]
     ylim([-20,15]);
     
     legend('Cum. juv.' , 'Adults');
-    %  ylim([-18, 3]);
     xlabel('Time (years)')
     
     i = i + 1; 
 end
 xlabel('Time (years)')
-% ylabel('Number of individuals')
-% legend(legends);legend('boxoff');
 
 
 %% Now Plot Resource. + Adults / managem. scenario 1
@@ -240,19 +232,16 @@ param.nGrid = 50;
 w = logspace(log10(param.Wo), log10(param.Wm), param.nGrid);
 param.deltaw = gradient(w); %The center of the grid
 
-% figure;
-% plotting
+
 hold on
 i = 1;
 
 for F = [0.5 , 1]
     [t1,Y1] = Manag_one(tRange, param, w, F);
-    % [t2,Y2] = Manag_two(tRange, param, w, F);
     
     n1 = Y1(:,1:end-2) ;   % split the solution into components - Immature / sum( n .* dw )
     N1 = Y1(:,end-1);      % split the solution into components - Adults / NUMBERS!!!
     R1 = Y1(:,end);        % split the solution into components - Resources
-    
     
     subplot(3,2,i)
     
@@ -262,7 +251,6 @@ for F = [0.5 , 1]
     yyaxis left 
     plot(t1, log10(R1),'LineWidth',2.5);
     ylabel('log10(R) [g/L]');
-   % ylim([-5, 5]);
 
     yyaxis right
     plot(t1, log10(N1),'LineWidth',2.5);
@@ -278,9 +266,8 @@ for F = [0.5 , 1]
     %Plotting the respective feeding level - NESTOR PLOT
     subplot(3,2,i+2)
     fw = ((param.y.*w).*R1)./(((param.y.*w).*R1)+(param.h*w.^(3/4)));
-    %fwend= fw(446:19:484,:)
     fwend= fw([389, 397, 406],:); %We can use either 19 years or 8 years sections
-    plot(log(w),fwend,'-','LineWidth',2.5)
+    plot(log10(w),fwend,'-','LineWidth',2.5)
     hold on
     yline(0.2,'--b',{'Critical feeding level'});
     legend('Year 389','Year 397','Year 406');
@@ -290,24 +277,22 @@ for F = [0.5 , 1]
     hold off
     
     %%%%%%%%%
-    %plotting the number of individuals per weight class at specific years
+    % plotting the number of individuals per weight class at specific years
     subplot(3,2,i+4)
-    her = [n1,N1];
+    her = n1;
     hend = her([389, 397, 406],:); %selecting the years to analyze
-    plot(log10(w),log10(hend),'-','LineWidth',2.5)
+    
+    plot(log10(w(1:end-1)),log10(hend),'-','LineWidth', 2.5)
     hold on
-    %plot(log10(w(1:end-1)),log10(n(1:301,:)),'-','LineWidth',2.5)
+
     legend('Year 389','Year 397','Year 406');
-    title('# Individuals per weight class'); 
+    title('Density of juveniles per weight class'); 
     xlabel('Weight (log)');
-    ylabel('# individuals (log)');
-    hold off
+    ylabel('log10(juv.) [indv./g/L]')   
     
     i = i + 1; 
 end
-%xlabel('Time (years)')
-% ylabel('Number of individuals')
-% legend(legends);legend('boxoff');
+
 
 
 %% Than - Cumul. juv. + Adults / managem. scenario 2
@@ -404,7 +389,7 @@ hold on
 i = 1;
 
 for F = [0.5 , 1]
-    % [t1,Y1] = Manag_one(tRange, param, w, F);
+
     [t2,Y2] = Manag_two(tRange, param, w, F);
    
     n2 = Y2(:,1:end-2) ;   % split the solution into components - Immature / sum( n .* dw )
@@ -438,7 +423,7 @@ for F = [0.5 , 1]
     fw = ((param.y.*w).*R2)./(((param.y.*w).*R2)+(param.h*w.^(3/4)));
     %fwend= fw(446:19:484,:)
     fwend= fw([371, 388, 398],:); %We can use either 19 years or 8 years sections
-    plot(log(w),fwend,'-','LineWidth',2.5)
+    plot(log10(w),fwend,'-','LineWidth',2.5)
     hold on
     yline(0.2,'--b',{'Critical feeding level'});
     legend('Year 371','Year 388','Year 398');
@@ -450,24 +435,23 @@ for F = [0.5 , 1]
     %%%%%%%%%
     %plotting the number of individuals per weight class at specific years
     subplot(3,2,i+4)
-    her = [n2,N2];
+    her = n2;
     hend = her([371, 388, 398],:); %selecting the years to analyze
-    plot(log10(w),log10(hend),'-','LineWidth',2.5)
+    plot(log10(w(1:end-1)),log10(hend),'-','LineWidth',2.5)
     hold on
-    %plot(log10(w(1:end-1)),log10(n(1:301,:)),'-','LineWidth',2.5)
     legend('Year 371','Year 388','Year 398');
-    title('# Individuals per weight class'); 
+   
+    
+    legend('Year 389','Year 397','Year 406');
+    title('Density of juveniles per weight class'); 
     xlabel('Weight (log)');
-    ylabel('# individuals (log)');
-    legend('Orientation','horizontal');
+    ylabel('log10(juv.) [indv./g/L]')   
 
     hold off
     
     i = i + 1; 
 end
-%xlabel('Time (years)')
-% ylabel('Number of individuals')
-% legend(legends);legend('boxoff');
+
 %% Direct Comparison of Managment Senarios
 
 param.h = 10;       % Factor for max.  ingestion rate g^1/4/yr
@@ -491,9 +475,7 @@ param.nGrid = 50;
 w = logspace(log10(param.Wo), log10(param.Wm), param.nGrid);
 param.deltaw = gradient(w); %The center of the grid
 
-% figure;
-% plotting
-% hold on
+
 legends = [];
 i = 1;
 j = 1;
@@ -553,8 +535,6 @@ for F = 0.5
     legend('Location','SouthEast');
     title('Fishing effort = 0.5')
 
- 
-    % legend('Manag 1/' +string(kk1(i)) + '=' + +string(F), 'Manag 2/' +string(kk2(i)) + '=' + +string(F))
     xlabel('Time (years)')
 end
     
